@@ -1,73 +1,126 @@
-import javax.swing.*; // Importing the Swing library for building graphical user interfaces (GUIs).
-import java.awt.*; // Importing the Abstract Window Toolkit (AWT) for GUI components and layout management.
-import java.awt.event.ActionEvent; // Importing ActionEvent class for handling action events.
-import java.awt.event.ActionListener; // Importing ActionListener interface for receiving action events.
-import java.sql.Connection; // Importing Connection interface for database connections.
-import java.sql.DriverManager; // Importing DriverManager class for managing database connections.
-import java.sql.PreparedStatement; // Importing PreparedStatement interface for executing parameterized SQL queries.
-import java.sql.SQLException; // Importing SQLException class for handling SQL exceptions.
-import java.text.SimpleDateFormat; // Importing SimpleDateFormat class for formatting dates.
-import java.util.Date; // Importing Date class for handling date and time.
-import de.wannawork.jcalendar.JCalendarComboBox; // Importing JCalendarComboBox for date selection in the GUI.
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Date;
+import javax.swing.border.EmptyBorder;
+import de.wannawork.jcalendar.JCalendarComboBox;
 
-public class ATIApplicationForm extends JFrame { // Defining the ATIApplicationForm class that extends JFrame to create a window.
+public class ATIApplicationForm extends JFrame {
 
-    private JTextField nameField, addressField, yearField; // Declaring text fields for user input.
-    private JComboBox<String> courseComboBox; // Declaring a combo box for course selection.
-    private JCalendarComboBox dobChooser; // Declaring a calendar combo box for date of birth selection.
+    private JTextField nameField, addressField, yearField;
+    private JComboBox<String> courseComboBox;
+    private JCalendarComboBox dobChooser;
 
-    public ATIApplicationForm() { // Constructor for the ATIApplicationForm class.
-        setTitle("ATI Application Form"); // Setting the title of the window.
+    public ATIApplicationForm() {
+        setTitle("Application Form for ATI");
         setSize(600, 500);
-        setLayout(new GridLayout(6, 2)); // Setting the layout to a grid with 6 rows and 2 columns.
+        setLayout(new GridBagLayout());
 
-        add(new JLabel("Name:")); // Adding a label for the name field.
-        nameField = new JTextField(); // Initializing the name text field.
-        nameField.setPreferredSize(new Dimension(200, 30)); // Setting preferred size for name field.
-        add(nameField); // Adding the name text field to the window.
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        add(new JLabel("Address:")); // Adding a label for the address field.
-        addressField = new JTextField(); // Initializing the address text field.
-        addressField.setPreferredSize(new Dimension(200, 30)); // Setting preferred size for address field.
-        add(addressField); // Adding the address text field to the window.
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2; // Make the heading span two columns
+        gbc.anchor = GridBagConstraints.CENTER; // Center the heading
+        gbc.insets = new Insets(10, 10, 20, 10); // Add padding below the heading
 
-        add(new JLabel("Course:")); // Adding a label for the course selection.
-        String[] courses = {"HNDIT", "HNDA", "HNDE"}; // Defining an array of course options.
-        courseComboBox = new JComboBox<>(courses); // Initializing the combo box with course options.
-        add(courseComboBox); // Adding the course combo box to the window.
+        JLabel headingLabel = new JLabel("Application Form for ATI");
+        headingLabel.setFont(new Font("Arial", Font.BOLD, 20)); // Set font and size
+        mainPanel.add(headingLabel, gbc);
 
-        add(new JLabel("Year:")); // Adding a label for the year field.
-        yearField = new JTextField(); // Initializing the year text field.
-        yearField.setPreferredSize(new Dimension(200, 30)); // Setting preferred size for year field.
-        add(yearField); // Adding the year text field to the window.
+        gbc.gridy = 1; // Move to the next row
+        gbc.gridwidth = 1; // Reset gridwidth
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        add(new JLabel("Date of Birth:")); // Adding a label for the date of birth field.
-        dobChooser = new JCalendarComboBox(); // Initializing the date of birth chooser.
-        add(dobChooser); // Adding the date of birth chooser to the window.
+        mainPanel.add(new JLabel("Name:"), gbc);
 
-        JButton submitButton = new JButton("Submit"); // Creating a submit button.
-        submitButton.setPreferredSize(new Dimension(100, 30)); // Setting preferred size for submit button.
-        submitButton.addActionListener(new ActionListener() { // Adding an action listener to handle button clicks.
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        nameField = new JTextField();
+        nameField.setPreferredSize(new Dimension(250, 30));
+        mainPanel.add(nameField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Address:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        addressField = new JTextField();
+        addressField.setPreferredSize(new Dimension(250, 30));
+        mainPanel.add(addressField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Course:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        String[] courses = {"HNDIT", "HNDA", "HNDE"};
+        courseComboBox = new JComboBox<>(courses);
+        mainPanel.add(courseComboBox, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Year:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        yearField = new JTextField();
+        yearField.setPreferredSize(new Dimension(250, 30));
+        mainPanel.add(yearField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.fill = GridBagConstraints.NONE;
+        mainPanel.add(new JLabel("Date of Birth:"), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        dobChooser = new JCalendarComboBox();
+        mainPanel.add(dobChooser, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 6;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.CENTER;
+        JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(100, 30));
+        submitButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) { // Overriding the actionPerformed method.
-                submitApplication(); // Calling the method to submit the application when the button is clicked.
+            public void actionPerformed(ActionEvent e) {
+                submitApplication();
             }
         });
-        add(submitButton); // Adding the submit button to the window.
+        mainPanel.add(submitButton, gbc);
 
-        setVisible(true); // Making the window visible.
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Setting the default close operation for the window.
+        add(mainPanel, new GridBagConstraints());
+
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void submitApplication() { // Method to handle application submission.
-        String name = nameField.getText(); // Retrieving the name from the text field.
-        String address = addressField.getText(); // Retrieving the address from the text field.
-        String course = (String) courseComboBox.getSelectedItem(); // Retrieving the selected course from the combo box.
-        String year = yearField.getText(); // Retrieving the year from the text field.
-        Date dob = dobChooser.getDate(); // Retrieving the selected date of birth.
+        String name = nameField.getText();
+        String address = addressField.getText();
+        String course = (String) courseComboBox.getSelectedItem();
+        String year = yearField.getText();
+        Date dob = dobChooser.getDate();
 
         if (name.isEmpty() || year.isEmpty() || dob == null) { // Checking if any required fields are empty.
-            JOptionPane.showMessageDialog(this, "Please fill in all fields."); // Showing an error message if fields are empty.
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return; // Exiting the method if validation fails.
         }
 
@@ -83,10 +136,10 @@ public class ATIApplicationForm extends JFrame { // Defining the ATIApplicationF
 
             int rowsAffected = preparedStatement.executeUpdate(); // Executing the update and getting the number of affected rows.
             if (rowsAffected > 0) { // Checking if the insertion was successful.
-                JOptionPane.showMessageDialog(this, "Application submitted successfully."); // Showing success message.
+                JOptionPane.showMessageDialog(this, "Application submitted successfully.");
                 clearFields(); // Clearing the input fields after successful submission.
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to submit application."); // Showing error message if submission failed.
+                JOptionPane.showMessageDialog(this, "Failed to submit application.");
             }
 
             preparedStatement.close(); // Closing the prepared statement.
@@ -98,10 +151,10 @@ public class ATIApplicationForm extends JFrame { // Defining the ATIApplicationF
     }
 
     private void clearFields() { // Method to clear input fields.
-        nameField.setText(""); // Clearing the name field.
-        addressField.setText(""); // Clearing the address field.
-        yearField.setText(""); // Clearing the year field.
-        dobChooser.setDate(null); // Clearing the date of birth chooser.
+        nameField.setText("");
+        addressField.setText("");
+        yearField.setText("");
+        dobChooser.setDate(null);
     }
 
     public static void main(String[] args) { // Main method to run the application.
